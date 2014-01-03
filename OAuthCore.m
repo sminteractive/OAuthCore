@@ -27,11 +27,11 @@ static NSData *HMAC_SHA1(NSString *data, NSString *key) {
 	return [NSData dataWithBytes:buf length:CC_SHA1_DIGEST_LENGTH];
 }
 
-NSString *OAuthorizationHeader(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret) {
-	return OAuthorizationHeaderWithCallback(url, method, body, _oAuthConsumerKey, _oAuthConsumerSecret, _oAuthToken, _oAuthTokenSecret, nil);
+NSString *OAuthorizationHeader(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret, NSDictionary* additionalParameters) {
+	return OAuthorizationHeaderWithCallback(url, method, body, _oAuthConsumerKey, _oAuthConsumerSecret, _oAuthToken, _oAuthTokenSecret, nil, additionalBodyParameters);
 }
 
-NSString *OAuthorizationHeaderWithCallback(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret, NSString *_oAuthCallback) {
+NSString *OAuthorizationHeaderWithCallback(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret, NSString *_oAuthCallback, NSDictionary* additionalParameters) {
 	NSString *_oAuthNonce = [NSString ab_GUID];
 	NSString *_oAuthTimestamp = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSince1970]];
 	NSString *_oAuthSignatureMethod = @"HMAC-SHA1";
@@ -43,6 +43,9 @@ NSString *OAuthorizationHeaderWithCallback(NSURL *url, NSString *method, NSData 
 	[oAuthAuthorizationParameters setObject:_oAuthSignatureMethod forKey:@"oauth_signature_method"];
 	[oAuthAuthorizationParameters setObject:_oAuthVersion forKey:@"oauth_version"];
 	[oAuthAuthorizationParameters setObject:_oAuthConsumerKey forKey:@"oauth_consumer_key"];
+    for ( NSString* key in additionalBodyParameters) {
+        [oAuthAuthorizationParameters setObject:additionalBodyParameters[key] forKey:key];
+    }
 	if(_oAuthToken)
 		[oAuthAuthorizationParameters setObject:_oAuthToken forKey:@"oauth_token"];
 	if (_oAuthCallback)
