@@ -28,7 +28,7 @@ static NSData *HMAC_SHA1(NSString *data, NSString *key) {
 }
 
 NSString *OAuthorizationHeader(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret, NSDictionary* additionalParameters) {
-	return OAuthorizationHeaderWithCallback(url, method, body, _oAuthConsumerKey, _oAuthConsumerSecret, _oAuthToken, _oAuthTokenSecret, nil, additionalBodyParameters);
+	return OAuthorizationHeaderWithCallback(url, method, body, _oAuthConsumerKey, _oAuthConsumerSecret, _oAuthToken, _oAuthTokenSecret, nil, additionalParameters);
 }
 
 NSString *OAuthorizationHeaderWithCallback(NSURL *url, NSString *method, NSData *body, NSString *_oAuthConsumerKey, NSString *_oAuthConsumerSecret, NSString *_oAuthToken, NSString *_oAuthTokenSecret, NSString *_oAuthCallback, NSDictionary* additionalParameters) {
@@ -43,8 +43,8 @@ NSString *OAuthorizationHeaderWithCallback(NSURL *url, NSString *method, NSData 
 	[oAuthAuthorizationParameters setObject:_oAuthSignatureMethod forKey:@"oauth_signature_method"];
 	[oAuthAuthorizationParameters setObject:_oAuthVersion forKey:@"oauth_version"];
 	[oAuthAuthorizationParameters setObject:_oAuthConsumerKey forKey:@"oauth_consumer_key"];
-    for ( NSString* key in additionalBodyParameters) {
-        [oAuthAuthorizationParameters setObject:additionalBodyParameters[key] forKey:key];
+    for ( NSString* key in additionalParameters) {
+        [oAuthAuthorizationParameters setObject:additionalParameters[key] forKey:key];
     }
 	if(_oAuthToken)
 		[oAuthAuthorizationParameters setObject:_oAuthToken forKey:@"oauth_token"];
